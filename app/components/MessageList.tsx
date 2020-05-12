@@ -12,9 +12,7 @@ export default class MessageList extends Component<any,any> {
           {this.props.logs.map((log: any, index: number) => (
             <div key={log+index} style={{
               padding:10,
-              borderBottomWidth: 1,
-              borderBottomStyle: 'solid',
-              borderBottomColor: "#666",
+              backgroundColor: index % 2 === 1 ? "#333" : "#222",
               color: utils.getMessageTypeColor(log.type)
             }}>
               {log.message}

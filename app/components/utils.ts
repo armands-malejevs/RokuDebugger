@@ -1,3 +1,6 @@
+import { Stream } from "stream";
+import * as utils from "./utils";
+
 enum MessageType {
   Warning = "w",
   Error = "e",
@@ -23,4 +26,69 @@ export function getMessageTypeColor(type: MessageType): string {
     default:
       return "limegreen";
   }
+}
+
+const filter = {
+  remove: {
+    contains: [
+      'Sending {"event":"ping"} ',
+      "Animation '",
+      'persistentStore',
+      'processCommand: ping',
+      '*** Bandwidth report',
+      'over TCP connection',
+      'processCommand: updateNodeProperties',
+      'updateNodePropertiesCommand',
+      'processCommand: focusMap',
+      'Replacing child of:',
+      'setFocusMap',
+      'Sending {"event":"listFocus",',
+      'sceneInterface::setFocus: {"direction"',
+      'DownloadedSegment - Info:',
+      'Segment Type',
+      'StreamingSegment - Info:',
+      'Sending {"data":{"1',
+      'Sending {"data":{"2":',
+      'Sending {"data":{"segBitrateBps":',
+      'Start Time: ',
+      'Time to write:',
+      'reportPosition',
+      '"event":"bookmark"',
+    ],
+    exact: [
+      ' ',
+      ''
+    ]
+  }
+}
+
+const separator = /\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z\]/;
+export function parseMessageList(data: string): any {
+  let logs = data.split(separator);
+  const filteredLogs = logs.filter((log: string) => {
+    // Contaisn filter value
+    for (const search of filter.remove.contains) {
+      if (log.includes(search)) {
+        return false;
+      }
+    }
+    // Exact match
+    for (const search of filter.remove.exact) {
+      if (log == search) {
+        return false;
+      }
+    }
+    if (log.length === 0) {
+      return false;
+    }
+    // Keep
+    return true;
+  })
+  const logsWithMetadata = filteredLogs.map((log: string) => {
+    return {
+      message: log,
+      type: utils.getMessageType(log),
+    }
+  });
+  return logsWithMetadata;
 }

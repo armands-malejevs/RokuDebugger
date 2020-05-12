@@ -1,22 +1,79 @@
 import React, { Component } from 'react';
 import { CONTROL_BAR_HEIGHT } from './constants';
 
-export default class ControlBar extends Component<any,any> {
+import Client, { keys } from 'roku-client';
+
+export default class ControlBar extends Component<any, any> {
+  state = {
+    loading: false,
+    devices: [],
+  };
+
+  handleChange = (event: any) => {
+    this.props.selectDevice(event.target.value);
+  }
+  searchDevices() {
+    this.setState({ loading: true }, () => {
+      Client.discoverAll().then(clients => {
+        const devices = clients.map(c => {
+          return c.ip
+            .replace('http://', '')
+            .replace('https://', '')
+            .split(':')[0];
+        });
+        if (devices.length > 0) {
+          this.props.selectDevice((devices[0]));
+        }
+        this.setState({ devices, loading: false });
+      }).catch((err) => {
+        console.warn(err);
+        console.warn("Searching again")
+        this.searchDevices();
+      });
+    });
+  }
+  componentDidMount() {
+    this.searchDevices();
+  }
+
+  renderDeviceSelector() {
+    if(this.state.loading) {
+      return(
+        <div>
+          Searching for Roku devices...
+        </div>
+      )
+    }
+    return (
+      <div>
+        <label style={{ marginRight: 10 }} htmlFor="cars">
+          Device:{' '}
+        </label>
+        <select onChange={this.handleChange} style={{ color: 'grey' }} id="cars">
+          {this.state.devices.map(device => (
+            <option key={device}  value={device}>
+              {device}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }
   render() {
-    return(
+    return (
       <div
         style={{
           height: `${CONTROL_BAR_HEIGHT}px`,
           backgroundColor: '#333',
-          alignItems: "center",
-          display: "flex",
-          paddingLeft: 15,
+          borderBottom: '1px solid #111',
+          alignItems: 'center',
+          display: 'flex',
+          paddingLeft: 15
         }}>
-        <label style={{marginRight: 10}} htmlFor="cars">Device: </label>
-        <select style={{color: 'grey'}} id="cars">
-          <option value="volvo">Roku Streaming Stick+</option>
-        </select>
+        <div>
+          {this.renderDeviceSelector()}
+        </div>
       </div>
-    )
+    );
   }
 }
