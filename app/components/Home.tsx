@@ -1,5 +1,6 @@
 import React from 'react';
 import { Stream } from "stream";
+import SplitPane from "react-split-pane";
 
 import * as utils from "./utils";
 import MessageList from './MessageList';
@@ -59,13 +60,13 @@ export default class Home extends React.Component {
             this.setState({logs: []})
           }}
           selectDevice={this.handleSelectDevice} />
-        <div style={{display: "flex", flexDirection: "row"}}>
+        <SplitPane split="vertical" minSize={200} defaultSize={200}>
           <FilterSideBar />
           <MessageList
             logs={this.state.logs}
             onBottomRef={(ref: any) => (this.logEndRef = ref)}
             onContainerRef={(ref: any) => (this.scrollView = ref)} />
-        </div>
+        </SplitPane>
       </div>
     );
   }
