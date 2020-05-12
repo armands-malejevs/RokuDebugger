@@ -10,13 +10,14 @@ export default class MessageList extends Component<any,any> {
         ref={(ref) => this.props.onContainerRef(ref)}
         style={{overflow: "overlay", height: `calc(100vh - ${CONTROL_BAR_HEIGHT}px)`}}>
           {this.props.logs.map((log: any, index: number) => (
-            <div key={log+index} style={{
+            <p key={log+index} style={{
               padding:10,
               backgroundColor: index % 2 === 1 ? "#333" : "#222",
-              color: utils.getMessageTypeColor(log.type)
+              color: utils.getMessageTypeColor(log.type),
+              fontSize: 14,
             }}>
               {log.message}
-            </div>
+            </p>
           ))}
         <div style={{marginTop: 15}} ref={(ref) => this.props.onBottomRef(ref)} />
       </div>

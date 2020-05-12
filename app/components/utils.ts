@@ -1,4 +1,3 @@
-import { Stream } from "stream";
 import * as utils from "./utils";
 
 enum MessageType {
@@ -11,7 +10,7 @@ export function getMessageType(log: string): MessageType {
   if (log.includes("Warning") || log.includes("warning")) {
     return MessageType.Warning;
   }
-  if (log.includes("Error") || log.includes("error") || log.includes(".err]")) {
+  if (log.includes("Error") || log.includes("error") || log.includes(".err]") || log.includes("ERROR")) {
     return MessageType.Error;
   }
   return MessageType.Info;
@@ -37,7 +36,10 @@ const filter = {
       'processCommand: ping',
       '*** Bandwidth report',
       'over TCP connection',
+      'TCP CLIENT -',
       'processCommand: updateNodeProperties',
+      /*
+      'PersistentStoreCommand - updating local registry from server persistent store',
       'updateNodePropertiesCommand',
       'processCommand: focusMap',
       'Replacing child of:',
@@ -54,6 +56,7 @@ const filter = {
       'Time to write:',
       'reportPosition',
       '"event":"bookmark"',
+      */
     ],
     exact: [
       ' ',

@@ -4,6 +4,7 @@ import { Stream } from "stream";
 import * as utils from "./utils";
 import MessageList from './MessageList';
 import ControlBar from './ControlBar';
+import FilterSideBar from './FilterSideBar';
 
 const Telnet = require('telnet-client')
 
@@ -54,11 +55,17 @@ export default class Home extends React.Component {
     return (
       <div data-tid="container">
         <ControlBar
+          clearMessages={() => {
+            this.setState({logs: []})
+          }}
           selectDevice={this.handleSelectDevice} />
-        <MessageList
-          logs={this.state.logs}
-          onBottomRef={(ref: any) => (this.logEndRef = ref)}
-          onContainerRef={(ref: any) => (this.scrollView = ref)} />
+        <div style={{display: "flex", flexDirection: "row"}}>
+          <FilterSideBar />
+          <MessageList
+            logs={this.state.logs}
+            onBottomRef={(ref: any) => (this.logEndRef = ref)}
+            onContainerRef={(ref: any) => (this.scrollView = ref)} />
+        </div>
       </div>
     );
   }

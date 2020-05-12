@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { CONTROL_BAR_HEIGHT } from './constants';
 
-import Client, { keys } from 'roku-client';
+import Client from 'roku-client';
 
 export default class ControlBar extends Component<any, any> {
   state = {
@@ -72,6 +72,17 @@ export default class ControlBar extends Component<any, any> {
         }}>
         <div>
           {this.renderDeviceSelector()}
+        </div>
+        <div
+        onClick={this.props.clearMessages}
+        style={{
+          marginLeft: 15,
+          cursor: "pointer",
+          border: "3px #111 grey",
+          borderRadius: 3,
+          padding: 5,
+        }}>
+            CLEAR
         </div>
       </div>
     );
