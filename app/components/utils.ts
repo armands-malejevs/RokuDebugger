@@ -7,6 +7,9 @@ enum MessageType {
 }
 
 export function getMessageType(log: string): MessageType {
+  if (!log) {
+    return MessageType.Info;
+  }
   if (log.includes("Warning") || log.includes("warning")) {
     return MessageType.Warning;
   }
@@ -38,7 +41,6 @@ const filter = {
       'over TCP connection',
       'TCP CLIENT -',
       'processCommand: updateNodeProperties',
-      /*
       'PersistentStoreCommand - updating local registry from server persistent store',
       'updateNodePropertiesCommand',
       'processCommand: focusMap',
@@ -56,7 +58,6 @@ const filter = {
       'Time to write:',
       'reportPosition',
       '"event":"bookmark"',
-      */
     ],
     exact: [
       ' ',
@@ -65,13 +66,13 @@ const filter = {
   }
 }
 
-const separator = /\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z\]/;
+const separator = /\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z\]/
 export function parseMessageList(data: string): any {
   let logs = data.split(separator);
   const filteredLogs = logs.filter((log: string) => {
     // Contaisn filter value
     for (const search of filter.remove.contains) {
-      if (log.includes(search)) {
+      if (log?.includes(search)) {
         return false;
       }
     }
@@ -81,7 +82,7 @@ export function parseMessageList(data: string): any {
         return false;
       }
     }
-    if (log.length === 0) {
+    if (!log || log.length === 0) {
       return false;
     }
     // Keep

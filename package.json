@@ -274,6 +274,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@hot-loader/react-dom": "^16.13.0",
+    "brace": "^0.11.1",
     "connected-react-router": "^6.8.0",
     "core-js": "^3.6.5",
     "devtron": "^1.4.0",
@@ -282,6 +283,7 @@
     "electron-updater": "^4.2.0",
     "history": "^4.10.1",
     "react": "^16.12.0",
+    "react-ace": "^8.1.0",
     "react-dom": "^16.12.0",
     "react-hot-loader": "^4.12.19",
     "react-redux": "^7.1.3",

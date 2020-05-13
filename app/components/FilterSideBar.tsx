@@ -34,7 +34,7 @@ export default class ControlBar extends Component<any, any> {
   }
 
   handleSelectCreate = () => {
-
+    this.props.onNewFilter();
   }
 
   render() {

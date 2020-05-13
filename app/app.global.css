@@ -109,3 +109,7 @@ a:hover {
 .Resizer.disabled:hover {
   border-color: transparent;
 }
+
+.filter-editor {
+  height: calc(100% - 110px) !important
+}
