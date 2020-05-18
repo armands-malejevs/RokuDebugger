@@ -4,6 +4,10 @@ import * as utils from "./utils";
 import { CONTROL_BAR_HEIGHT } from './constants';
 import ReactJson from 'react-json-view'
 
+import HyperModal from 'react-hyper-modal';
+
+const { BrowserWindow } = require('electron')
+
 function IsJsonString(str: string) {
   try {
       JSON.parse(str);
@@ -14,20 +18,12 @@ function IsJsonString(str: string) {
 }
 
 export default class MessageList extends Component<any,any> {
-  renderMessage = (message: string, key: string) => {
+  state = {
+    fullMessage: null,
+    fullLogType: "i"
+  }
+  renderMessage = (message: string) => {
    return message;
-
-   return message.split("\n").map((part, index) => {
-    if(IsJsonString(part)) {
-      console.warn(JSON.parse(part));
-      return <ReactJson key={key+index} theme="monokai" src={JSON.parse(part)} />
-    }
-    return <div style={{
-      fontSize: 14,
-      whiteSpace: "pre-wrap"
-    }} key={key+index}>{part}</div>
-   })
-   
   }
   render() {
     return(
@@ -42,10 +38,37 @@ export default class MessageList extends Component<any,any> {
               fontSize: 14,
               whiteSpace: "pre-wrap"
             }}>
-              {this.renderMessage(log.message, log+index)}
+            {log.message.length > 300 ? 
+            <div>
+              {this.renderMessage(log.message.substring(0, 300), log+index)}
+              {" "}<a onClick={() => {
+                this.setState({fullMessage: log.message, fullLogType: log.type})
+              }}>
+                (full message)
+              </a>
+            </div> : 
+            this.renderMessage(log.message, log+index)}
             </div>
           ))}
         <div style={{marginTop: 15}} ref={(ref) => this.props.onBottomRef(ref)} />
+        <HyperModal
+          classes={{
+            contentClassName: 'modal-content',
+          }}
+          renderCloseIcon={() => null}
+          isOpen={!!this.state.fullMessage}
+          requestClose={() => this.setState({fullMessage: null})}
+        >
+          <div style={{
+            color: "#111",
+            fontSize: 16,
+            whiteSpace: "pre-wrap",
+            overflowWrap: 'break-word',
+            padding: 50,
+          }}>
+            {this.state.fullMessage}
+          </div>
+        </HyperModal>
       </div>
     )
   }

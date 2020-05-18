@@ -113,3 +113,7 @@ a:hover {
 .filter-editor {
   height: calc(100% - 110px) !important
 }
+
+.hyperModalContentWrapper {
+  background: #333 !important;
+}
