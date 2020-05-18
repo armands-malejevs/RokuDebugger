@@ -58,6 +58,10 @@ const filter = {
       'Time to write:',
       'reportPosition',
       '"event":"bookmark"',
+      '<vmap:VMAP version="1.0"',
+      '<Tracking event',
+      '<AdaptationSet',
+      '<Impression'
     ],
     exact: [
       ' ',
@@ -66,29 +70,43 @@ const filter = {
   }
 }
 
-const separator = /\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z\]/
+const separator = /\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z\]/g
 export function parseMessageList(data: string): any {
   let logs = data.split(separator);
-  const filteredLogs = logs.filter((log: string) => {
-    // Contaisn filter value
-    for (const search of filter.remove.contains) {
-      if (log?.includes(search)) {
-        return false;
+  
+  const filteredLogs = logs.map((rawLog: string) => {
+    const log = rawLog.split(/(^|[^\n])\n(?!\n)/g).filter((part) => {
+      // Contains filter value
+      for (const search of filter.remove.contains) {
+        if (part?.includes(search)) {
+          return false;
+        }
       }
-    }
-    // Exact match
-    for (const search of filter.remove.exact) {
-      if (log == search) {
-        return false;
+      // Exact match
+      for (const search of filter.remove.exact) {
+        if (part == search) {
+          return false;
+        }
       }
-    }
+      return true;
+    }).join("\n")
     if (!log || log.length === 0) {
-      return false;
+      return null;
     }
     // Keep
-    return true;
+    return log.replace(/(\r\n|\r|\n){2,}/g, '$1\n').trim();
   })
-  const logsWithMetadata = filteredLogs.map((log: string) => {
+  const filteredLogsData = filteredLogs.filter((val) => {
+    const isValid = val !== null
+    && val.length > 0
+    && !((
+      val.charCodeAt(0) === 13 ||
+      val.charCodeAt(0) === 10 ||
+      val.charCodeAt(0) === 32
+    ) && val.length < 4);
+    return isValid
+  });
+  const logsWithMetadata = filteredLogsData.map((log: string) => {
     return {
       message: log,
       type: utils.getMessageType(log),

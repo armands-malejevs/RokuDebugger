@@ -39,7 +39,7 @@ export default class Home extends React.Component {
       this.setState({ logs: newLogs }, () =>{
         shouldScrollToBottom && this.logEndRef?.scrollIntoView(false,{ behavior: "smooth" });
       }); 
-    }, 200);
+    }, 50);
   }
   connectToDevice = async (ip: string) => {
     this.connection = new Telnet()
@@ -49,6 +49,7 @@ export default class Home extends React.Component {
       port: 8085,
       negotiationMandatory: false,
       timeout: 3000,
+      maxBufferLength: 10000000,
     }
     try {
       await this.connection.connect(params)
@@ -60,6 +61,7 @@ export default class Home extends React.Component {
     shell.on('data', this.handleDataStream);
   }
   handleDataStream = (data: Stream) => {
+    this.startRenderingInterval();
     this.unprocessedData += data.toString();
   }
   handleNewFilterOpen = () => {
