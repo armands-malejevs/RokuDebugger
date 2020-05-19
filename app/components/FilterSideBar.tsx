@@ -14,23 +14,29 @@ export default class ControlBar extends Component<any, any> {
     filters: []
   }
 
-  renderItem = (filter: FilterItem, onSelect: any) => {
+  renderItem = (filter: FilterItem, index: number | null, onSelect: any) => {
     return (
       <div
+        key={index ?? "all-messages"}
+        onDoubleClick={() => this.props.editFilter(filter, index)}
         style={{
           padding: 15,
+          paddingTop: 10,
+          paddingBottom: 10,
+          fontSize: 14,
           cursor: "pointer",
-          color: filter.id === NEW_FILTER ? "#008ae6" : "grey",
-          textAlign: filter.id === NEW_FILTER ? "center" : "left",
+          background: this.props.selectedIndex === index ? '#222' : 'transparent',
+          color: filter?.id === NEW_FILTER ? "#008ae6" : "#EEE",
+          textAlign: filter?.id === NEW_FILTER ? "center" : "left",
         }}
-        onClick={() => onSelect(filter)}>
-        {filter.name}
+        onClick={() => onSelect(filter, index)}>
+        {filter?.name ?? "(unnamed)"}
       </div>
     )
   }
 
-  handleSlectFilter = (filter: FilterItem) => {
-    this.props.selectFilter(filter);
+  handleSlectFilter = (filter: FilterItem, index: number) => {
+    this.props.selectFilter(filter, index);
   }
 
   handleSelectCreate = () => {
@@ -42,15 +48,21 @@ export default class ControlBar extends Component<any, any> {
       <div
         style={{
           width: "calc(100%)",
-          height: "100%",
+          height: "calc(100% - 60px)",
           backgroundColor: '#333',
+          overflowY: "scroll",
         }}>
-          {this.state.filters.map((filter) => this.renderItem(filter, this.handleSlectFilter))}
+          {this.renderItem({
+            name: "All Messages",
+            value: "",
+            id: "all-messages"
+          }, null, this.handleSlectFilter)}
+          {this.props.filters.map((filter: any, index: number) => this.renderItem(filter, index, this.handleSlectFilter))}
           {this.renderItem({
             name: "New Filter",
             value: "",
             id: NEW_FILTER
-          }, this.handleSelectCreate)}
+          }, -1, this.handleSelectCreate)}
       </div>
     );
   }

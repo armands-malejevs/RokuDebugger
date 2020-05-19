@@ -29,7 +29,7 @@ export function getMessageTypeColor(type: MessageType): string {
       return "limegreen";
   }
 }
-
+/*
 const filter = {
   remove: {
     contains: [
@@ -68,22 +68,30 @@ const filter = {
       ''
     ]
   }
+}*/
+
+const emptyFilter = {
+  name: "Empty",
+  remove: {
+    contains: [],
+    exact: [],
+  }
 }
 
 const separator = /\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z\]/g
-export function parseMessageList(data: string): any {
+export function parseMessageList(data: string, filter = emptyFilter): any {
   let logs = data.split(separator);
   
   const filteredLogs = logs.map((rawLog: string) => {
     const log = rawLog.split(/(^|[^\n])\n(?!\n)/g).filter((part) => {
       // Contains filter value
-      for (const search of filter.remove.contains) {
+      for (const search of filter?.remove?.contains ?? []) {
         if (part?.includes(search)) {
           return false;
         }
       }
       // Exact match
-      for (const search of filter.remove.exact) {
+      for (const search of filter?.remove?.exact ?? []) {
         if (part == search) {
           return false;
         }

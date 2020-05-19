@@ -41,7 +41,7 @@ export default class MessageList extends Component<any,any> {
             {log.message.length > 300 ? 
             <div>
               {this.renderMessage(log.message.substring(0, 300), log+index)}
-              {" "}<a onClick={() => {
+              {" "}<a style={{color: '#999'}} onClick={() => {
                 this.setState({fullMessage: log.message, fullLogType: log.type})
               }}>
                 (full message)
