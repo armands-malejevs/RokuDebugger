@@ -117,3 +117,17 @@ a:hover {
 .hyperModalContentWrapper {
   background: #333 !important;
 }
+
+.controlButton {
+  background-position: center;
+  transition: background 0.4s;
+}
+.controlButton:hover {
+  background: #111 radial-gradient(circle, transparent 1%, #222 1%) center/15000%;
+}
+.controlButton:active {
+  background-color: #111;
+  background-size: 100%;
+  transition: background 0s;
+  justify-content: center;
+}

@@ -30,6 +30,7 @@ export function getMessageTypeColor(type: MessageType): string {
   }
 }
 /*
+*** Sample filter ***
 const filter = {
   remove: {
     contains: [
@@ -114,7 +115,7 @@ export function parseMessageList(data: string, filter = emptyFilter): any {
     ) && val.length < 4);
     return isValid
   });
-  const logsWithMetadata = filteredLogsData.map((log: string) => {
+  const logsWithMetadata = filteredLogsData.map((log: any) => {
     return {
       message: log,
       type: utils.getMessageType(log),

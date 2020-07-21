@@ -18,6 +18,8 @@ export default class Home extends React.Component {
     filters: storageUtils.getFilters(),
     selectedFilterIndex: null,
     editingIndex: null,
+    paused: false,
+    quickFilter: ''
   }
   public connection: any;
   public logEndRef: any;
@@ -70,6 +72,9 @@ export default class Home extends React.Component {
     });
   }
   handleDataStream = (data: Stream) => {
+    if (this.state.paused) {
+      return;
+    }
     this.startRenderingInterval();
     this.unprocessedData += data.toString();
     this.rawLog += data.toString();
@@ -97,15 +102,51 @@ export default class Home extends React.Component {
       this.unprocessedData = this.rawLog;
     });
   }
+  importMessages = () => {
+    var fs = require('fs'); // Load the File System to execute our common tasks (CRUD)
+    const dialog = require('electron').remote.dialog 
+
+    dialog.showOpenDialog({properties: ['openFile']}).then(result => {
+      // fileNames is an array that contains all the selected
+      if(result?.filePaths === undefined || result.filePaths.length < 1){
+          console.log("No file selected");
+          return;
+      }
+      fs.readFile(result.filePaths[0], 'utf-8', (err, data) => {
+          if(err){
+              alert("An error ocurred reading the file :" + err.message);
+              return;
+          }
+          this.clearMessages();
+          this.setState({paused: true})
+          this.unprocessedData += data;
+          this.rawLog += data;
+          // Change how to handle the file content
+      });
+    }).catch(err => {
+      console.log(err)
+    });
+  }
+  togglePause = () => {
+    this.setState({paused: !this.state.paused})
+  }
+
+  onSearchChange = (evt: any) => {
+    this.setState({quickFilter: evt.target.value})
+  }
   render() {
     return (
       <div data-tid="container">
         <ControlBar
           clearMessages={this.clearMessages}
-          selectDevice={this.handleSelectDevice} />
-        <SplitPane split="vertical" minSize={200} defaultSize={200}>
+          togglePause={this.togglePause}
+          paused={this.state.paused}
+          importMessages={this.importMessages}
+          selectDevice={this.handleSelectDevice}
+          onSearchChange={this.onSearchChange} />
+        <SplitPane split="vertical" minSize={200} defaultSize={200} pane2Style={{overflow: 'scroll'}}>
           <FilterSideBar
-            editFilter={(f: any, i: number) => this.setState({
+            editFilter={(_filter: any, i: number) => this.setState({
               editingIndex: i,
               creatingFilter: true,
             })}
@@ -118,6 +159,7 @@ export default class Home extends React.Component {
             :
             <MessageList
               logs={this.state.logs}
+              quickFilter={this.state.quickFilter}
               onBottomRef={(ref: any) => (this.logEndRef = ref)}
               onContainerRef={(ref: any) => (this.scrollView = ref)} />}
         </SplitPane>

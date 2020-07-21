@@ -83,7 +83,6 @@ export default class MessageList extends Component<any, any> {
     const buttonWrapperStyle = {
       height: 60,
       display: 'flex',
-      flexDirection: 'row',
       justifyContent: 'flex-end',
       alignSelf: 'center',
     };

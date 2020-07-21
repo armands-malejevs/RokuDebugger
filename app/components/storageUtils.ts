@@ -38,5 +38,14 @@ export function removeFilter(index: number) {
 }
 
 export function getFilters() {
-  return JSON.parse(store.get(FILTER_KEY));
+  let filters = "[]";
+  try{
+    filters = store.get(FILTER_KEY);
+    if(!filters) {
+      return [];
+    }
+  }catch(err) {
+    return [];
+  }
+  return JSON.parse(filters);
 }
