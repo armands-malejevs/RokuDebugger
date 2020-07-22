@@ -30,6 +30,9 @@ To package apps for the local platform:
 yarn package
 ```
 
+## Acknowledgments
+This project is based on the awesome React Electron Boilerplate project https://github.com/electron-react-boilerplate/electron-react-boilerplate
+
 ## License
 
 MIT © [Roku Debugger](https://github.com/armadilio3/RokuDebugger/blob/master/LICENSE)
