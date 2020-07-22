@@ -26,7 +26,7 @@ yarn dev
 
 When launching the app it will automatically look for devices on your local network and connect to the first one it finds.
 
-The main reason why this tool was developed is the filters. You can create your custom filters that will remove any unneeded logs. To create a new filter click the New Filter button in the sidebar and once you’re done editing your filter json click save to add the filter to your list of filters.
+The main reason why this tool was developed are the filters. You can create your custom filters that will remove any unneeded logs. To create a new filter click the New Filter button in the sidebar and once you’re done editing the json, click save to add it to your list of filters.
 
 This a minimal sample filter:
 
