@@ -6,64 +6,86 @@ interface FilterItem {
   id: string;
 }
 
-const NEW_FILTER = "NEW_FILTER"
+const NEW_FILTER = 'NEW_FILTER';
 
 export default class ControlBar extends Component<any, any> {
-
   state = {
     filters: []
-  }
+  };
+
+  handleSlectFilter = (filter: FilterItem, index: number) => {
+    this.props.selectFilter(filter, index);
+  };
+
+  handleSelectCreate = () => {
+    this.props.onNewFilter();
+  };
 
   renderItem = (filter: FilterItem, index: number | null, onSelect: any) => {
     return (
       <div
-        key={index ?? "all-messages"}
+        key={index ?? 'all-messages'}
         onDoubleClick={() => this.props.editFilter(filter, index)}
         style={{
-          padding: 15,
-          paddingTop: 10,
-          paddingBottom: 10,
-          fontSize: 14,
-          cursor: "pointer",
-          background: this.props.selectedIndex === index ? '#222' : 'transparent',
-          color: filter?.id === NEW_FILTER ? "#008ae6" : "#EEE",
-          textAlign: filter?.id === NEW_FILTER ? "center" : "left",
+          ...styles.filterItem,
+          background:
+            this.props.selectedIndex === index ? '#222' : 'transparent',
+          color: filter?.id === NEW_FILTER ? '#008ae6' : '#EEE',
+          textAlign: filter?.id === NEW_FILTER ? 'center' : 'left'
         }}
-        onClick={() => onSelect(filter, index)}>
-        {filter?.name ?? "(unnamed)"}
+        onClick={() => onSelect(filter, index)}
+      >
+        {filter?.name ?? '(unnamed)'}
       </div>
-    )
-  }
+    );
+  };
 
-  handleSlectFilter = (filter: FilterItem, index: number) => {
-    this.props.selectFilter(filter, index);
-  }
+  renderAllMessagesItem = () =>
+    this.renderItem(
+      {
+        name: 'All Messages',
+        value: '',
+        id: 'all-messages'
+      },
+      null,
+      this.handleSlectFilter
+    );
 
-  handleSelectCreate = () => {
-    this.props.onNewFilter();
-  }
+  renderNewFilterButton = () =>
+    this.renderItem(
+      {
+        name: 'New Filter',
+        value: '',
+        id: NEW_FILTER
+      },
+      -1,
+      this.handleSelectCreate
+    );
 
   render() {
     return (
-      <div
-        style={{
-          width: "calc(100%)",
-          height: "calc(100% - 60px)",
-          backgroundColor: '#333',
-          overflowY: "scroll",
-        }}>
-          {this.renderItem({
-            name: "All Messages",
-            value: "",
-            id: "all-messages"
-          }, null, this.handleSlectFilter)}
-          {this.props.filters.map((filter: any, index: number) => this.renderItem(filter, index, this.handleSlectFilter))}
-          {this.renderItem({
-            name: "New Filter",
-            value: "",
-            id: NEW_FILTER
-          }, -1, this.handleSelectCreate)}
+      <div style={styles.container}>
+        {this.renderAllMessagesItem()}
+        {this.props.filters.map((filter: any, index: number) =>
+          this.renderItem(filter, index, this.handleSlectFilter)
+        )}
+        {this.renderNewFilterButton()}
       </div>
     );
   }
 }
+
+const styles = {
+  container: {
+    width: 'calc(100%)',
+    height: 'calc(100% - 60px)',
+    backgroundColor: '#333'
+  },
+  filterItem: {
+    padding: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    fontSize: 14,
+    cursor: 'pointer'
+  }
+};

@@ -3,7 +3,7 @@ import AceEditor from 'react-ace';
 
 import { remote } from 'electron';
 
-import * as storageUtils from "./storageUtils";
+import * as storageUtils from './storageUtils';
 
 import 'brace/mode/json';
 import 'brace/theme/monokai';
@@ -12,15 +12,22 @@ export default class MessageList extends Component<any, any> {
   filterValue: string;
   constructor(props: any) {
     super(props);
-    this.filterValue = props.editingIndex === null ? `{
+    this.filterValue =
+      props.editingIndex === null
+        ? `{
       "name": "Custom Filter",
       "remove": {
         "contains": [],
         "exact": []
       }
-    }` : JSON.stringify(storageUtils.getFilters()[props.editingIndex], null, 1);
+    }`
+        : JSON.stringify(
+            storageUtils.getFilters()[props.editingIndex],
+            null,
+            1
+          );
   }
-  
+
   handleCancel = () => {
     const options = {
       type: 'warning',
@@ -47,12 +54,12 @@ export default class MessageList extends Component<any, any> {
       storageUtils.removeFilter(this.props.editingIndex);
       this.props.onHideEditor();
     }
-  }
+  };
 
   handleSave = () => {
     try {
       JSON.parse(this.filterValue);
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       const options = {
         type: 'error',
@@ -74,63 +81,75 @@ export default class MessageList extends Component<any, any> {
       storageUtils.saveNewFilter(this.filterValue);
     }
     this.props.onHideEditor();
-  }
+  };
 
   handleChange = (value: string) => {
     this.filterValue = value;
-  }
+  };
   render() {
-    const buttonWrapperStyle = {
-      height: 60,
-      display: 'flex',
-      justifyContent: 'flex-end',
-      alignSelf: 'center',
-    };
-    const buttonStyle = {
-      height: 30,
-      fontSize: 18,
-      fontWeight: 500,
-      marginTop: 10,
-      marginRight: 10,
-      padding: 10,
-      paddingTop: 0,
-      paddingBottom: 0,
-      background: '#008ae6',
-      color: 'white',
-      border: 0,
-      cursor: 'pointer'
-    };
     return (
-      <div style={{ height: '100%' }}>
+      <div style={styles.container}>
         <AceEditor
           mode="json"
           theme="monokai"
           onChange={this.handleChange}
-          name="UNIQUE_ID_OF_DIV"
+          name="ace-filter-editor"
           fontSize={14}
           className="filter-editor"
           width="100%"
           value={this.filterValue}
           editorProps={{ $blockScrolling: true }}
         />
-        <div style={{
-          display: "flex",
-          flexDirection: "row",
-        }}>
-          <div style={{flex: 1, marginLeft: 5}}>
-            {this.props.editingIndex !== null && <button onClick={this.handleDelete} style={{ ...buttonStyle, background: 'tomato' }}>Delete</button>}
+        <div style={styles.buttonContainer}>
+          <div style={styles.deleteContainer}>
+            {this.props.editingIndex !== null && (
+              <button
+                onClick={this.handleDelete}
+                style={{ ...styles.button, background: 'tomato' }}
+              >
+                Delete
+              </button>
+            )}
           </div>
-          <div style={buttonWrapperStyle}>
+          <div style={styles.buttonWrapper}>
             <button
               onClick={this.handleCancel}
-              style={{ ...buttonStyle, background: '#555' }}
+              style={{ ...styles.button, background: '#555' }}
             >
               Cancel
             </button>
-            <button onClick={this.handleSave} style={buttonStyle}>Save</button>
+            <button onClick={this.handleSave} style={styles.button}>
+              Save
+            </button>
           </div>
         </div>
       </div>
     );
   }
 }
+
+const styles = {
+  container: { height: '100%' },
+  buttonContainer: { display: 'flex' },
+  deleteContainer: { flex: 1, marginLeft: 5 },
+  button: {
+    height: 30,
+    fontSize: 18,
+    fontWeight: 500,
+    marginTop: 10,
+    marginRight: 10,
+    padding: 10,
+    paddingTop: 0,
+    paddingBottom: 0,
+    background: '#008ae6',
+    color: 'white',
+    border: 0,
+    cursor: 'pointer'
+  },
+  buttonWrapper: {
+    height: 60,
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignSelf: 'center'
+  }
+};
