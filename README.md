@@ -13,6 +13,12 @@ First, clone the repo via git and install dependencies:
 git clone https://github.com/armadilio3/RokuDebugger
 cd RokuDebugger
 yarn
+```
+
+## Run
+
+Run the app in development
+```bash
 yarn dev
 ```
 
@@ -26,4 +32,4 @@ yarn package
 
 ## License
 
-MIT © [Roku Debugger](https://github.com/armadilio3/RokuDebugger)
+MIT © [Roku Debugger](https://github.com/armadilio3/RokuDebugger/blob/master/LICENSE)
